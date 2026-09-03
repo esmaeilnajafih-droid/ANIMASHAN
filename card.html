@@ -1,0 +1,345 @@
+<div class="card" 
+     onmousemove="cardGlow(event, this)"
+     onmouseleave="cardReset(this)">
+    <div class="card-avatar">
+        <i class="fas {{ icons[loop.index0 % icons|length] }}"></i>
+    </div>
+    <div class="card-info">
+        <div class="card-title">
+            <span class="card-number">#{{ loop.index }}</span>
+            {{ anim.title }}
+            {% if loop.index <= 3 %}
+            <span class="badge-new">جدید</span>
+            {% endif %}
+        </div>
+        <div class="card-description">
+            <i class="fas fa-circle"></i>
+            {{ anim.description }}
+        </div>
+    </div>
+    <a href="{{ anim.url }}" target="_blank" class="btn-watch">
+        <i class="fas fa-play"></i> تماشا
+    </a>
+</div>
+
+<style>
+.card {
+    background: var(--glass-main);
+    backdrop-filter: blur(30px);
+    border-radius: var(--radius-main);
+    padding: 18px 26px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: var(--transition-main);
+    border: 1px solid var(--glass-border);
+    box-shadow: var(--shadow-main);
+    position: relative;
+    overflow: hidden;
+    animation: cardSlide 0.7s ease forwards;
+    opacity: 0;
+    gap: 20px;
+    height: 120px;
+    min-height: 120px;
+    max-height: 120px;
+    transform-style: preserve-3d;
+    perspective: 1500px;
+    cursor: default;
+}
+
+.card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at var(--mouse-x, 50%) var(--mouse-y, 50%), 
+                rgba(255,255,255,0.1) 0%, 
+                rgba(255,255,255,0.02) 30%,
+                transparent 60%);
+    transition: 0.3s;
+    pointer-events: none;
+    border-radius: var(--radius-main);
+}
+
+.card::after {
+    content: '';
+    position: absolute;
+    inset: -1px;
+    border-radius: var(--radius-main);
+    padding: 1px;
+    background: conic-gradient(from var(--angle, 0deg), 
+        #ff6b6b, #4ecdc4, #a29bfe, #fdcb6e, #fd79a8, #ff6b6b);
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    opacity: 0;
+    transition: var(--transition-main);
+}
+
+.card:hover::after {
+    opacity: 1;
+    animation: spinBorderRGB 2s linear infinite;
+}
+
+@keyframes spinBorderRGB {
+    from { --angle: 0deg; }
+    to { --angle: 360deg; }
+}
+
+@property --angle {
+    syntax: '<angle>';
+    initial-value: 0deg;
+    inherits: false;
+}
+
+.card:hover {
+    transform: translateY(-10px) scale(1.03) rotateX(4deg) rotateY(4deg);
+    border-color: transparent;
+    box-shadow: 0 40px 100px rgba(0,0,0,0.6), 0 0 100px rgba(78,205,196,0.05);
+}
+
+@keyframes cardSlide {
+    from {
+        opacity: 0;
+        transform: translateY(60px) scale(0.85) rotateX(-15deg) rotateY(-10deg);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1) rotateX(0) rotateY(0);
+    }
+}
+
+.card-avatar {
+    width: 55px;
+    height: 55px;
+    min-width: 55px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.6rem;
+    color: white;
+    background: var(--gradient-main);
+    background-size: 300% 300%;
+    animation: gradientMove 4s ease-in-out infinite;
+    box-shadow: 0 15px 50px rgba(0,0,0,0.4);
+    transition: var(--transition-main);
+    position: relative;
+    transform-style: preserve-3d;
+}
+
+.card-avatar::after {
+    content: '';
+    position: absolute;
+    inset: -4px;
+    border-radius: 50%;
+    background: var(--gradient-main);
+    background-size: 300% 300%;
+    animation: gradientMove 4s ease-in-out infinite;
+    opacity: 0;
+    filter: blur(20px);
+    transition: var(--transition-main);
+    z-index: -1;
+}
+
+.card:hover .card-avatar {
+    transform: scale(1.25) rotate(-25deg) translateZ(30px);
+    box-shadow: 0 0 80px rgba(108,92,231,0.3);
+}
+
+.card:hover .card-avatar::after {
+    opacity: 0.7;
+}
+
+.card-info {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
+}
+
+.card-title {
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    text-shadow: 0 2px 40px rgba(0,0,0,0.4);
+}
+
+.card-number {
+    font-size: 0.7rem;
+    color: var(--text-secondary);
+    background: var(--glass-main);
+    backdrop-filter: blur(10px);
+    padding: 2px 16px;
+    border-radius: 20px;
+    font-weight: 700;
+    min-width: 38px;
+    text-align: center;
+    border: 1px solid var(--glass-border);
+    flex-shrink: 0;
+}
+
+.card-description {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.card-description i {
+    color: var(--accent-2);
+    font-size: 0.4rem;
+    flex-shrink: 0;
+    filter: drop-shadow(0 0 20px var(--accent-2));
+}
+
+.btn-watch {
+    background: var(--gradient-main);
+    background-size: 300% 300%;
+    animation: gradientMove 4s ease-in-out infinite;
+    color: white;
+    border: none;
+    padding: 12px 32px;
+    border-radius: 60px;
+    font-size: 0.9rem;
+    cursor: pointer;
+    text-decoration: none;
+    transition: var(--transition-main);
+    font-family: inherit;
+    font-weight: 700;
+    white-space: nowrap;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    box-shadow: 0 15px 50px rgba(108,92,231,0.3);
+    position: relative;
+    overflow: hidden;
+    flex-shrink: 0;
+    height: 44px;
+}
+
+.btn-watch::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.15), transparent);
+    transform: translateX(-100%);
+    transition: 0.8s;
+}
+
+.btn-watch:hover::before {
+    transform: translateX(100%);
+}
+
+.btn-watch::after {
+    content: '';
+    position: absolute;
+    inset: -2px;
+    border-radius: 60px;
+    background: var(--gradient-main);
+    background-size: 300% 300%;
+    animation: gradientMove 4s ease-in-out infinite;
+    filter: blur(20px);
+    z-index: -1;
+    opacity: 0;
+    transition: var(--transition-main);
+}
+
+.btn-watch:hover::after {
+    opacity: 0.5;
+}
+
+.btn-watch:hover {
+    transform: scale(1.15) translateY(-5px);
+    box-shadow: 0 25px 70px rgba(108,92,231,0.5);
+}
+
+.btn-watch i {
+    font-size: 0.85rem;
+}
+
+.badge-new {
+    background: var(--gradient-main);
+    background-size: 300% 300%;
+    animation: gradientMove 3s ease-in-out infinite;
+    color: white;
+    font-size: 0.6rem;
+    padding: 2px 14px;
+    border-radius: 20px;
+    font-weight: 700;
+    box-shadow: 0 0 50px rgba(108,92,231,0.3);
+    flex-shrink: 0;
+}
+
+@media (max-width: 768px) {
+    .card {
+        padding: 12px 16px;
+        gap: 12px;
+        height: 100px;
+        min-height: 100px;
+        max-height: 100px;
+        border-radius: 18px;
+    }
+    .card-avatar {
+        width: 42px;
+        height: 42px;
+        min-width: 42px;
+        font-size: 1.2rem;
+    }
+    .card-title { font-size: 0.85rem; white-space: normal; }
+    .card-description { font-size: 0.7rem; white-space: normal; }
+    .btn-watch {
+        padding: 8px 20px;
+        font-size: 0.75rem;
+        height: 36px;
+        gap: 6px;
+    }
+}
+
+@media (max-width: 480px) {
+    .card {
+        padding: 10px 14px;
+        gap: 10px;
+        height: 85px;
+        min-height: 85px;
+        max-height: 85px;
+        border-radius: 14px;
+    }
+    .card-avatar {
+        width: 34px;
+        height: 34px;
+        min-width: 34px;
+        font-size: 1rem;
+    }
+    .card-title { font-size: 0.75rem; gap: 6px; }
+    .card-number {
+        font-size: 0.55rem;
+        padding: 1px 10px;
+        min-width: 28px;
+    }
+    .card-description { font-size: 0.6rem; }
+    .btn-watch {
+        font-size: 0.65rem;
+        padding: 6px 14px;
+        height: 30px;
+        gap: 5px;
+    }
+    .btn-watch i { font-size: 0.6rem; }
+    .badge-new {
+        font-size: 0.5rem;
+        padding: 1px 8px;
+    }
+}
+</style>
