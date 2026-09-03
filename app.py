@@ -1,6 +1,5 @@
 from flask import Flask, render_template, request
 import os
-import json
 
 app = Flask(__name__)
 
@@ -8,16 +7,16 @@ app = Flask(__name__)
 # ۱. ایجاد خودکار فایل‌های HTML
 # ============================================
 
-def create_templates_folder():
+def create_templates():
     """ایجاد پوشه templates و فایل‌های HTML به صورت خودکار"""
     
-    # ایجاد پوشه templates
     if not os.path.exists('templates'):
         os.makedirs('templates')
         print("✅ پوشه templates ایجاد شد")
     
     # ===== فایل base.html =====
-    base_html = '''<!DOCTYPE html>
+    with open('templates/base.html', 'w', encoding='utf-8') as f:
+        f.write('''<!DOCTYPE html>
 <html lang="fa" dir="rtl">
 <head>
     <meta charset="UTF-8">
@@ -25,27 +24,21 @@ def create_templates_folder():
     <title>{% block title %}🎬 سینمای انیمیشن{% endblock %}</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;600;700;900&display=swap" rel="stylesheet">
-    
     <style>
         :root {
             --bg-primary: #0a0a1a;
             --text-primary: #ffffff;
-            --text-secondary: rgba(255, 255, 255, 0.7);
+            --text-secondary: rgba(255,255,255,0.7);
             --accent-1: #ff6b6b;
             --accent-2: #4ecdc4;
             --accent-3: #a29bfe;
-            --accent-4: #fdcb6e;
-            --accent-5: #fd79a8;
             --gradient-main: linear-gradient(135deg, #6c5ce7 0%, #a29bfe 25%, #4ecdc4 50%, #ff6b6b 75%, #fdcb6e 100%);
-            --shadow-main: 0 30px 80px rgba(0, 0, 0, 0.7);
+            --shadow-main: 0 30px 80px rgba(0,0,0,0.7);
             --radius-main: 24px;
-            --transition-main: all 0.8s cubic-bezier(0.23, 1, 0.32, 1);
-            --glass-main: rgba(255, 255, 255, 0.05);
-            --glass-border: rgba(255, 255, 255, 0.1);
+            --glass-main: rgba(255,255,255,0.05);
+            --glass-border: rgba(255,255,255,0.1);
         }
-
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-
+        * { margin:0; padding:0; box-sizing:border-box; }
         body {
             font-family: 'Vazirmatn', 'Segoe UI', sans-serif;
             background: var(--bg-primary);
@@ -54,26 +47,20 @@ def create_templates_folder():
             overflow-x: hidden;
             position: relative;
         }
-
         .cinema-bg {
             position: fixed;
-            top: 0; left: 0; right: 0; bottom: 0;
-            z-index: 0;
-            background: 
-                radial-gradient(ellipse at 10% 30%, rgba(108, 92, 231, 0.4) 0%, transparent 50%),
-                radial-gradient(ellipse at 90% 70%, rgba(78, 205, 196, 0.3) 0%, transparent 50%),
-                radial-gradient(ellipse at 50% 50%, rgba(255, 107, 107, 0.1) 0%, transparent 60%),
-                radial-gradient(ellipse at 30% 80%, rgba(162, 155, 254, 0.2) 0%, transparent 40%),
-                #0a0a1a;
+            top:0; left:0; right:0; bottom:0;
+            z-index:0;
+            background: radial-gradient(ellipse at 10% 30%, rgba(108,92,231,0.4) 0%, transparent 50%),
+                        radial-gradient(ellipse at 90% 70%, rgba(78,205,196,0.3) 0%, transparent 50%),
+                        radial-gradient(ellipse at 50% 50%, rgba(255,107,107,0.1) 0%, transparent 60%),
+                        #0a0a1a;
             animation: cinemaPulse 10s ease-in-out infinite alternate;
         }
-
         @keyframes cinemaPulse {
             0% { opacity: 0.7; transform: scale(1); }
-            50% { opacity: 1; transform: scale(1.02); }
-            100% { opacity: 0.8; transform: scale(0.98); }
+            100% { opacity: 1; transform: scale(1.02); }
         }
-
         .light-rays {
             position: fixed;
             top: -50%; left: -50%;
@@ -83,43 +70,37 @@ def create_templates_folder():
             background: repeating-linear-gradient(45deg, transparent 0px, rgba(255,255,255,0.02) 50px, transparent 100px);
             animation: lightRays 20s linear infinite;
         }
-
         @keyframes lightRays {
-            0% { transform: rotate(0deg) scale(1); }
-            100% { transform: rotate(360deg) scale(1.2); }
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
         }
-
         .particles-3d {
             position: fixed;
-            top: 0; left: 0; right: 0; bottom: 0;
-            z-index: 1;
+            top:0; left:0; right:0; bottom:0;
+            z-index:1;
             pointer-events: none;
             overflow: hidden;
         }
-
         .particle-3d {
             position: absolute;
             border-radius: 50%;
-            background: rgba(255, 255, 255, 0.1);
+            background: rgba(255,255,255,0.1);
             backdrop-filter: blur(2px);
-            border: 1px solid rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255,255,255,0.05);
             animation: float3d linear infinite;
         }
-
-        .particle-3d:nth-child(1) { width: 40px; height: 40px; left: 10%; animation-duration: 25s; }
-        .particle-3d:nth-child(2) { width: 60px; height: 60px; left: 25%; animation-duration: 30s; animation-delay: 2s; }
-        .particle-3d:nth-child(3) { width: 30px; height: 30px; left: 40%; animation-duration: 20s; animation-delay: 4s; }
-        .particle-3d:nth-child(4) { width: 50px; height: 50px; left: 55%; animation-duration: 28s; animation-delay: 1s; }
-        .particle-3d:nth-child(5) { width: 35px; height: 35px; left: 70%; animation-duration: 22s; animation-delay: 3s; }
-        .particle-3d:nth-child(6) { width: 45px; height: 45px; left: 85%; animation-duration: 26s; animation-delay: 5s; }
-
+        .particle-3d:nth-child(1) { width:40px; height:40px; left:10%; animation-duration:25s; }
+        .particle-3d:nth-child(2) { width:60px; height:60px; left:25%; animation-duration:30s; animation-delay:2s; }
+        .particle-3d:nth-child(3) { width:30px; height:30px; left:40%; animation-duration:20s; animation-delay:4s; }
+        .particle-3d:nth-child(4) { width:50px; height:50px; left:55%; animation-duration:28s; animation-delay:1s; }
+        .particle-3d:nth-child(5) { width:35px; height:35px; left:70%; animation-duration:22s; animation-delay:3s; }
+        .particle-3d:nth-child(6) { width:45px; height:45px; left:85%; animation-duration:26s; animation-delay:5s; }
         @keyframes float3d {
-            0% { transform: translateY(100vh) rotate(0deg) scale(0); opacity: 0; }
-            10% { opacity: 0.5; }
-            90% { opacity: 0.5; }
-            100% { transform: translateY(-10vh) rotate(720deg) scale(1); opacity: 0; }
+            0% { transform: translateY(100vh) rotate(0deg) scale(0); opacity:0; }
+            10% { opacity:0.5; }
+            90% { opacity:0.5; }
+            100% { transform: translateY(-10vh) rotate(720deg) scale(1); opacity:0; }
         }
-
         .container {
             position: relative;
             z-index: 2;
@@ -127,12 +108,10 @@ def create_templates_folder():
             margin: 0 auto;
             padding: 20px;
         }
-
         .theme-toggle {
             position: fixed;
-            top: 25px;
-            left: 25px;
-            z-index: 1000;
+            top:25px; left:25px;
+            z-index:1000;
             background: var(--glass-main);
             backdrop-filter: blur(25px);
             color: var(--text-primary);
@@ -141,30 +120,25 @@ def create_templates_folder():
             border-radius: 50px;
             cursor: pointer;
             font-size: 1.5rem;
-            transition: var(--transition-main);
+            transition: all 0.8s cubic-bezier(0.23,1,0.32,1);
             box-shadow: var(--shadow-main);
         }
-
         .theme-toggle:hover {
             transform: scale(1.2) rotate(90deg);
             border-color: var(--accent-2);
-            box-shadow: 0 0 80px rgba(78, 205, 196, 0.2);
+            box-shadow: 0 0 80px rgba(78,205,196,0.2);
         }
-
-        @media (max-width: 768px) {
-            .theme-toggle {
-                top: 15px;
-                left: 15px;
-                padding: 12px 16px;
-                font-size: 1.1rem;
-            }
+        @media (max-width:768px) {
+            .theme-toggle { top:15px; left:15px; padding:12px 16px; font-size:1.1rem; }
         }
+        .mt-3 { margin-top:30px; }
+        .op-4 { opacity:0.4; }
+        .fs-small { font-size:0.7rem; }
+        .text-center { text-align:center; }
     </style>
-    
     {% block extra_css %}{% endblock %}
 </head>
 <body>
-
     <div class="cinema-bg"></div>
     <div class="light-rays"></div>
     <div class="particles-3d">
@@ -175,36 +149,29 @@ def create_templates_folder():
         <div class="particle-3d"></div>
         <div class="particle-3d"></div>
     </div>
-
     <button class="theme-toggle" onclick="toggleTheme()" title="تغییر تم">
         <i class="fas fa-moon"></i>
     </button>
-
     <div class="container">
         {% block content %}{% endblock %}
     </div>
-
     <script>
         function toggleTheme() {
             const html = document.documentElement;
             const currentTheme = html.getAttribute('data-theme');
             const newTheme = currentTheme === 'light' ? 'dark' : 'light';
             html.setAttribute('data-theme', newTheme);
-            
             const btn = document.querySelector('.theme-toggle');
             if (newTheme === 'light') {
                 btn.innerHTML = '<i class="fas fa-sun"></i>';
             } else {
                 btn.innerHTML = '<i class="fas fa-moon"></i>';
             }
-            
             localStorage.setItem('theme', newTheme);
         }
-
         document.addEventListener('DOMContentLoaded', function() {
             const savedTheme = localStorage.getItem('theme') || 'dark';
             document.documentElement.setAttribute('data-theme', savedTheme);
-            
             const btn = document.querySelector('.theme-toggle');
             if (savedTheme === 'light') {
                 btn.innerHTML = '<i class="fas fa-sun"></i>';
@@ -212,7 +179,6 @@ def create_templates_folder():
                 btn.innerHTML = '<i class="fas fa-moon"></i>';
             }
         });
-
         function cardGlow(event, card) {
             const rect = card.getBoundingClientRect();
             const x = ((event.clientX - rect.left) / rect.width) * 100;
@@ -220,20 +186,19 @@ def create_templates_folder():
             card.style.setProperty('--mouse-x', x + '%');
             card.style.setProperty('--mouse-y', y + '%');
         }
-
         function cardReset(card) {
             card.style.setProperty('--mouse-x', '50%');
             card.style.setProperty('--mouse-y', '50%');
         }
-
         {% block extra_js %}{% endblock %}
     </script>
-
 </body>
-</html>'''
-    
+</html>''')
+    print("✅ base.html ایجاد شد")
+
     # ===== فایل header.html =====
-    header_html = '''<div class="header">
+    with open('templates/header.html', 'w', encoding='utf-8') as f:
+        f.write('''<div class="header">
     <div class="header-content">
         <div class="header-badge">
             <i class="fas fa-crown"></i> برترین انیمیشن‌ها
@@ -249,7 +214,6 @@ def create_templates_folder():
         {% include 'stats.html' %}
     </div>
 </div>
-
 <style>
 .header {
     text-align: center;
@@ -262,10 +226,7 @@ def create_templates_folder():
     box-shadow: var(--shadow-main);
     position: relative;
     overflow: hidden;
-    transform-style: preserve-3d;
-    perspective: 1000px;
 }
-
 .header::before {
     content: '';
     position: absolute;
@@ -276,14 +237,11 @@ def create_templates_folder():
     animation: rotateBorder 8s linear infinite;
     filter: blur(30px);
 }
-
 @keyframes rotateBorder {
     0% { transform: rotate(0deg) scale(1); }
     100% { transform: rotate(360deg) scale(1.2); }
 }
-
 .header-content { position: relative; z-index: 1; }
-
 .header-badge {
     display: inline-block;
     background: rgba(255,255,255,0.08);
@@ -297,12 +255,10 @@ def create_templates_folder():
     letter-spacing: 3px;
     animation: badgePulse 2s infinite;
 }
-
 @keyframes badgePulse {
-    0%, 100% { box-shadow: 0 0 20px rgba(78,205,196,0); }
+    0%,100% { box-shadow: 0 0 20px rgba(78,205,196,0); }
     50% { box-shadow: 0 0 60px rgba(78,205,196,0.15); }
 }
-
 .header h1 {
     font-size: 5rem;
     font-weight: 900;
@@ -310,19 +266,15 @@ def create_templates_folder():
     background-size: 300% 300%;
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
-    background-clip: text;
     animation: gradientMove 5s ease-in-out infinite;
     letter-spacing: 5px;
     line-height: 1.2;
-    filter: drop-shadow(0 0 60px rgba(108,92,231,0.2));
 }
-
 @keyframes gradientMove {
     0% { background-position: 0% 50%; }
     50% { background-position: 100% 50%; }
     100% { background-position: 0% 50%; }
 }
-
 .header h1 i {
     -webkit-text-fill-color: initial;
     background: none;
@@ -331,52 +283,42 @@ def create_templates_folder():
     filter: drop-shadow(0 0 40px rgba(108,92,231,0.5));
     animation: iconFloat 4s ease-in-out infinite;
 }
-
 @keyframes iconFloat {
-    0%, 100% { transform: translateY(0) rotate(0deg) scale(1); }
-    25% { transform: translateY(-20px) rotate(-5deg) scale(1.05); }
-    75% { transform: translateY(10px) rotate(5deg) scale(0.95); }
+    0%,100% { transform: translateY(0) rotate(0deg); }
+    25% { transform: translateY(-20px) rotate(-5deg); }
+    75% { transform: translateY(10px) rotate(5deg); }
 }
-
 .header .subtitle {
     font-size: 1.4rem;
     color: var(--text-secondary);
     margin-top: 15px;
     font-weight: 300;
     letter-spacing: 2px;
-    animation: subtitleGlow 3s ease-in-out infinite;
 }
-
-@keyframes subtitleGlow {
-    0%, 100% { text-shadow: 0 0 20px rgba(78,205,196,0); }
-    50% { text-shadow: 0 0 40px rgba(78,205,196,0.2); }
-}
-
 .header .subtitle i {
     color: var(--accent-2);
     margin-left: 12px;
     animation: subtitlePulse 2s infinite;
 }
-
 @keyframes subtitlePulse {
-    0%, 100% { opacity: 1; transform: scale(1); }
+    0%,100% { opacity: 1; transform: scale(1); }
     50% { opacity: 0.4; transform: scale(0.8); }
 }
-
-@media (max-width: 768px) {
+@media (max-width:768px) {
     .header h1 { font-size: 3rem; }
     .header { padding: 40px 20px 30px; }
     .header .subtitle { font-size: 1rem; }
 }
-
-@media (max-width: 480px) {
+@media (max-width:480px) {
     .header h1 { font-size: 2rem; }
     .header { padding: 25px 15px 20px; border-radius: 18px; }
 }
-</style>'''
+</style>''')
+    print("✅ header.html ایجاد شد")
 
     # ===== فایل stats.html =====
-    stats_html = '''<div class="header-stats">
+    with open('templates/stats.html', 'w', encoding='utf-8') as f:
+        f.write('''<div class="header-stats">
     <div class="header-stat">
         <i class="fas fa-video"></i>
         <strong>{{ total_count }}</strong> انیمیشن
@@ -390,7 +332,6 @@ def create_templates_folder():
         <strong>۵۰,۰۰۰+</strong> بازدید کل
     </div>
 </div>
-
 <style>
 .header-stats {
     display: flex;
@@ -399,7 +340,6 @@ def create_templates_folder():
     margin-top: 30px;
     flex-wrap: wrap;
 }
-
 .header-stat {
     background: var(--glass-main);
     backdrop-filter: blur(15px);
@@ -408,54 +348,48 @@ def create_templates_folder():
     border: 1px solid var(--glass-border);
     font-size: 0.95rem;
     color: var(--text-secondary);
-    transition: var(--transition-main);
+    transition: all 0.8s cubic-bezier(0.23,1,0.32,1);
     cursor: default;
     position: relative;
     overflow: hidden;
 }
-
 .header-stat::before {
     content: '';
     position: absolute;
-    top: -50%;
-    left: -50%;
-    width: 200%;
-    height: 200%;
+    top: -50%; left: -50%;
+    width: 200%; height: 200%;
     background: conic-gradient(from 0deg, transparent, rgba(78,205,196,0.05), transparent);
     animation: rotateBorder 6s linear infinite;
 }
-
 .header-stat:hover {
     transform: translateY(-5px) scale(1.05);
     border-color: var(--accent-2);
     box-shadow: 0 20px 60px rgba(78,205,196,0.1);
 }
-
 .header-stat strong {
     color: #fff;
     font-size: 1.2rem;
     font-weight: 900;
 }
-
 .header-stat i {
     color: var(--accent-2);
     margin-left: 10px;
 }
-
-@media (max-width: 768px) {
+@media (max-width:768px) {
     .header-stats { gap: 15px; }
     .header-stat { padding: 8px 18px; font-size: 0.8rem; }
 }
-
-@media (max-width: 480px) {
+@media (max-width:480px) {
     .header-stats { gap: 10px; }
     .header-stat { padding: 6px 14px; font-size: 0.7rem; }
     .header-stat strong { font-size: 0.9rem; }
 }
-</style>'''
+</style>''')
+    print("✅ stats.html ایجاد شد")
 
     # ===== فایل search.html =====
-    search_html = '''<form class="search-box" method="GET" action="/">
+    with open('templates/search.html', 'w', encoding='utf-8') as f:
+        f.write('''<form class="search-box" method="GET" action="/">
     <input type="text" name="search" placeholder="🔍 جستجوی انیمیشن..." value="{{ search_query }}">
     <button type="submit">
         <i class="fas fa-search"></i> جستجو
@@ -466,7 +400,6 @@ def create_templates_folder():
     </a>
     {% endif %}
 </form>
-
 <style>
 .search-box {
     display: flex;
@@ -475,7 +408,6 @@ def create_templates_folder():
     justify-content: center;
     flex-wrap: wrap;
 }
-
 .search-box input {
     flex: 1;
     max-width: 520px;
@@ -486,23 +418,20 @@ def create_templates_folder():
     border: 1px solid var(--glass-border);
     border-radius: 60px;
     font-size: 1.1rem;
-    transition: var(--transition-main);
+    transition: all 0.8s cubic-bezier(0.23,1,0.32,1);
     font-family: inherit;
     box-shadow: var(--shadow-main);
 }
-
 .search-box input:focus {
     outline: none;
     border-color: var(--accent-2);
     box-shadow: 0 0 80px rgba(78,205,196,0.1);
     transform: scale(1.03);
 }
-
 .search-box input::placeholder {
     color: var(--text-secondary);
     opacity: 0.4;
 }
-
 .search-box button {
     padding: 20px 50px;
     background: var(--gradient-main);
@@ -513,7 +442,7 @@ def create_templates_folder():
     border-radius: 60px;
     font-size: 1.1rem;
     cursor: pointer;
-    transition: var(--transition-main);
+    transition: all 0.8s cubic-bezier(0.23,1,0.32,1);
     font-family: inherit;
     font-weight: 700;
     box-shadow: 0 15px 60px rgba(108,92,231,0.3);
@@ -523,23 +452,18 @@ def create_templates_folder():
     position: relative;
     overflow: hidden;
 }
-
 .search-box button::before {
     content: '';
     position: absolute;
-    top: -50%;
-    left: -50%;
-    width: 200%;
-    height: 200%;
+    top: -50%; left: -50%;
+    width: 200%; height: 200%;
     background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 60%);
     animation: rotateBorder 8s linear infinite;
 }
-
 .search-box button:hover {
     transform: translateY(-8px) scale(1.05);
     box-shadow: 0 25px 80px rgba(108,92,231,0.5);
 }
-
 .reset-btn {
     padding: 20px 35px;
     background: rgba(255,107,107,0.12);
@@ -549,7 +473,7 @@ def create_templates_folder():
     border-radius: 60px;
     font-size: 1.1rem;
     cursor: pointer;
-    transition: var(--transition-main);
+    transition: all 0.8s cubic-bezier(0.23,1,0.32,1);
     font-family: inherit;
     text-decoration: none;
     display: inline-flex;
@@ -557,55 +481,27 @@ def create_templates_folder():
     gap: 10px;
     box-shadow: var(--shadow-main);
 }
-
 .reset-btn:hover {
     transform: translateY(-8px) scale(1.05);
     background: rgba(255,107,107,0.2);
     box-shadow: 0 25px 80px rgba(255,107,107,0.1);
 }
-
-@media (max-width: 768px) {
-    .search-box input {
-        max-width: 100%;
-        width: 100%;
-        padding: 14px 22px;
-        font-size: 0.95rem;
-    }
-    .search-box button {
-        width: 100%;
-        justify-content: center;
-        padding: 14px;
-        font-size: 0.95rem;
-    }
-    .reset-btn {
-        width: 100%;
-        justify-content: center;
-        padding: 14px;
-        font-size: 0.95rem;
-    }
+@media (max-width:768px) {
+    .search-box input { max-width:100%; width:100%; padding:14px 22px; font-size:0.95rem; }
+    .search-box button { width:100%; justify-content:center; padding:14px; font-size:0.95rem; }
+    .reset-btn { width:100%; justify-content:center; padding:14px; font-size:0.95rem; }
 }
-
-@media (max-width: 480px) {
-    .search-box input {
-        padding: 12px 18px;
-        font-size: 0.85rem;
-        height: 44px;
-    }
-    .search-box button {
-        padding: 12px 18px;
-        font-size: 0.85rem;
-        height: 44px;
-    }
-    .reset-btn {
-        padding: 12px 18px;
-        font-size: 0.85rem;
-        height: 44px;
-    }
+@media (max-width:480px) {
+    .search-box input { padding:12px 18px; font-size:0.85rem; height:44px; }
+    .search-box button { padding:12px 18px; font-size:0.85rem; height:44px; }
+    .reset-btn { padding:12px 18px; font-size:0.85rem; height:44px; }
 }
-</style>'''
+</style>''')
+    print("✅ search.html ایجاد شد")
 
     # ===== فایل card.html =====
-    card_html = '''<div class="card" 
+    with open('templates/card.html', 'w', encoding='utf-8') as f:
+        f.write('''<div class="card" 
      onmousemove="cardGlow(event, this)"
      onmouseleave="cardReset(this)">
     <div class="card-avatar">
@@ -628,7 +524,6 @@ def create_templates_folder():
         <i class="fas fa-play"></i> تماشا
     </a>
 </div>
-
 <style>
 .card {
     background: var(--glass-main);
@@ -638,7 +533,7 @@ def create_templates_folder():
     display: flex;
     justify-content: space-between;
     align-items: center;
-    transition: var(--transition-main);
+    transition: all 0.8s cubic-bezier(0.23,1,0.32,1);
     border: 1px solid var(--glass-border);
     box-shadow: var(--shadow-main);
     position: relative;
@@ -653,7 +548,6 @@ def create_templates_folder():
     perspective: 1500px;
     cursor: default;
 }
-
 .card::before {
     content: '';
     position: absolute;
@@ -666,7 +560,6 @@ def create_templates_folder():
     pointer-events: none;
     border-radius: var(--radius-main);
 }
-
 .card::after {
     content: '';
     position: absolute;
@@ -679,42 +572,30 @@ def create_templates_folder():
     -webkit-mask-composite: xor;
     mask-composite: exclude;
     opacity: 0;
-    transition: var(--transition-main);
+    transition: all 0.8s cubic-bezier(0.23,1,0.32,1);
 }
-
 .card:hover::after {
     opacity: 1;
     animation: spinBorderRGB 2s linear infinite;
 }
-
 @keyframes spinBorderRGB {
     from { --angle: 0deg; }
     to { --angle: 360deg; }
 }
-
 @property --angle {
     syntax: '<angle>';
     initial-value: 0deg;
     inherits: false;
 }
-
 .card:hover {
     transform: translateY(-10px) scale(1.03) rotateX(4deg) rotateY(4deg);
     border-color: transparent;
     box-shadow: 0 40px 100px rgba(0,0,0,0.6), 0 0 100px rgba(78,205,196,0.05);
 }
-
 @keyframes cardSlide {
-    from {
-        opacity: 0;
-        transform: translateY(60px) scale(0.85) rotateX(-15deg) rotateY(-10deg);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0) scale(1) rotateX(0) rotateY(0);
-    }
+    from { opacity:0; transform: translateY(60px) scale(0.85) rotateX(-15deg) rotateY(-10deg); }
+    to { opacity:1; transform: translateY(0) scale(1) rotateX(0) rotateY(0); }
 }
-
 .card-avatar {
     width: 55px;
     height: 55px;
@@ -729,11 +610,10 @@ def create_templates_folder():
     background-size: 300% 300%;
     animation: gradientMove 4s ease-in-out infinite;
     box-shadow: 0 15px 50px rgba(0,0,0,0.4);
-    transition: var(--transition-main);
+    transition: all 0.8s cubic-bezier(0.23,1,0.32,1);
     position: relative;
     transform-style: preserve-3d;
 }
-
 .card-avatar::after {
     content: '';
     position: absolute;
@@ -744,19 +624,14 @@ def create_templates_folder():
     animation: gradientMove 4s ease-in-out infinite;
     opacity: 0;
     filter: blur(20px);
-    transition: var(--transition-main);
+    transition: all 0.8s cubic-bezier(0.23,1,0.32,1);
     z-index: -1;
 }
-
 .card:hover .card-avatar {
     transform: scale(1.25) rotate(-25deg) translateZ(30px);
     box-shadow: 0 0 80px rgba(108,92,231,0.3);
 }
-
-.card:hover .card-avatar::after {
-    opacity: 0.7;
-}
-
+.card:hover .card-avatar::after { opacity: 0.7; }
 .card-info {
     display: flex;
     flex-direction: column;
@@ -765,7 +640,6 @@ def create_templates_folder():
     min-width: 0;
     overflow: hidden;
 }
-
 .card-title {
     font-size: 1.05rem;
     font-weight: 700;
@@ -777,9 +651,7 @@ def create_templates_folder():
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    text-shadow: 0 2px 40px rgba(0,0,0,0.4);
 }
-
 .card-number {
     font-size: 0.7rem;
     color: var(--text-secondary);
@@ -793,7 +665,6 @@ def create_templates_folder():
     border: 1px solid var(--glass-border);
     flex-shrink: 0;
 }
-
 .card-description {
     font-size: 0.85rem;
     color: var(--text-secondary);
@@ -804,14 +675,11 @@ def create_templates_folder():
     overflow: hidden;
     text-overflow: ellipsis;
 }
-
 .card-description i {
     color: var(--accent-2);
     font-size: 0.4rem;
     flex-shrink: 0;
-    filter: drop-shadow(0 0 20px var(--accent-2));
 }
-
 .btn-watch {
     background: var(--gradient-main);
     background-size: 300% 300%;
@@ -823,7 +691,7 @@ def create_templates_folder():
     font-size: 0.9rem;
     cursor: pointer;
     text-decoration: none;
-    transition: var(--transition-main);
+    transition: all 0.8s cubic-bezier(0.23,1,0.32,1);
     font-family: inherit;
     font-weight: 700;
     white-space: nowrap;
@@ -836,7 +704,6 @@ def create_templates_folder():
     flex-shrink: 0;
     height: 44px;
 }
-
 .btn-watch::before {
     content: '';
     position: absolute;
@@ -845,11 +712,7 @@ def create_templates_folder():
     transform: translateX(-100%);
     transition: 0.8s;
 }
-
-.btn-watch:hover::before {
-    transform: translateX(100%);
-}
-
+.btn-watch:hover::before { transform: translateX(100%); }
 .btn-watch::after {
     content: '';
     position: absolute;
@@ -861,22 +724,13 @@ def create_templates_folder():
     filter: blur(20px);
     z-index: -1;
     opacity: 0;
-    transition: var(--transition-main);
+    transition: all 0.8s cubic-bezier(0.23,1,0.32,1);
 }
-
-.btn-watch:hover::after {
-    opacity: 0.5;
-}
-
+.btn-watch:hover::after { opacity: 0.5; }
 .btn-watch:hover {
     transform: scale(1.15) translateY(-5px);
     box-shadow: 0 25px 70px rgba(108,92,231,0.5);
 }
-
-.btn-watch i {
-    font-size: 0.85rem;
-}
-
 .badge-new {
     background: var(--gradient-main);
     background-size: 300% 300%;
@@ -889,82 +743,38 @@ def create_templates_folder():
     box-shadow: 0 0 50px rgba(108,92,231,0.3);
     flex-shrink: 0;
 }
-
-@media (max-width: 768px) {
-    .card {
-        padding: 12px 16px;
-        gap: 12px;
-        height: 100px;
-        min-height: 100px;
-        max-height: 100px;
-        border-radius: 18px;
-    }
-    .card-avatar {
-        width: 42px;
-        height: 42px;
-        min-width: 42px;
-        font-size: 1.2rem;
-    }
-    .card-title { font-size: 0.85rem; white-space: normal; }
-    .card-description { font-size: 0.7rem; white-space: normal; }
-    .btn-watch {
-        padding: 8px 20px;
-        font-size: 0.75rem;
-        height: 36px;
-        gap: 6px;
-    }
+@media (max-width:768px) {
+    .card { padding:12px 16px; gap:12px; height:100px; min-height:100px; max-height:100px; border-radius:18px; }
+    .card-avatar { width:42px; height:42px; min-width:42px; font-size:1.2rem; }
+    .card-title { font-size:0.85rem; white-space:normal; }
+    .card-description { font-size:0.7rem; white-space:normal; }
+    .btn-watch { padding:8px 20px; font-size:0.75rem; height:36px; gap:6px; }
 }
-
-@media (max-width: 480px) {
-    .card {
-        padding: 10px 14px;
-        gap: 10px;
-        height: 85px;
-        min-height: 85px;
-        max-height: 85px;
-        border-radius: 14px;
-    }
-    .card-avatar {
-        width: 34px;
-        height: 34px;
-        min-width: 34px;
-        font-size: 1rem;
-    }
-    .card-title { font-size: 0.75rem; gap: 6px; }
-    .card-number {
-        font-size: 0.55rem;
-        padding: 1px 10px;
-        min-width: 28px;
-    }
-    .card-description { font-size: 0.6rem; }
-    .btn-watch {
-        font-size: 0.65rem;
-        padding: 6px 14px;
-        height: 30px;
-        gap: 5px;
-    }
-    .btn-watch i { font-size: 0.6rem; }
-    .badge-new {
-        font-size: 0.5rem;
-        padding: 1px 8px;
-    }
+@media (max-width:480px) {
+    .card { padding:10px 14px; gap:10px; height:85px; min-height:85px; max-height:85px; border-radius:14px; }
+    .card-avatar { width:34px; height:34px; min-width:34px; font-size:1rem; }
+    .card-title { font-size:0.75rem; gap:6px; }
+    .card-number { font-size:0.55rem; padding:1px 10px; min-width:28px; }
+    .card-description { font-size:0.6rem; }
+    .btn-watch { font-size:0.65rem; padding:6px 14px; height:30px; gap:5px; }
+    .badge-new { font-size:0.5rem; padding:1px 8px; }
 }
-</style>'''
+</style>''')
+    print("✅ card.html ایجاد شد")
 
     # ===== فایل empty.html =====
-    empty_html = '''<div class="empty-message">
+    with open('templates/empty.html', 'w', encoding='utf-8') as f:
+        f.write('''<div class="empty-message">
     <i class="fas fa-sad-tear"></i>
     <h3>😕 انیمیشنی پیدا نشد</h3>
     <p>کلمه دیگری جستجو کنید یا <a href="/">به صفحه اصلی</a> برگردید</p>
 </div>
-
 <style>
 .empty-message {
     text-align: center;
     padding: 80px 20px;
     color: var(--text-secondary);
 }
-
 .empty-message i {
     font-size: 5rem;
     color: var(--accent-2);
@@ -973,32 +783,30 @@ def create_templates_folder():
     filter: drop-shadow(0 0 80px rgba(78,205,196,0.2));
     animation: iconFloat 3s ease-in-out infinite;
 }
-
 .empty-message h3 {
     font-size: 2rem;
     margin-bottom: 12px;
     color: var(--text-primary);
 }
-
 .empty-message a {
     color: var(--accent-2);
     text-decoration: none;
     font-weight: 600;
-    transition: var(--transition-main);
+    transition: all 0.8s cubic-bezier(0.23,1,0.32,1);
 }
-
 .empty-message a:hover {
     filter: drop-shadow(0 0 40px rgba(78,205,196,0.3));
 }
-
-@media (max-width: 480px) {
-    .empty-message h3 { font-size: 1.2rem; }
-    .empty-message i { font-size: 3rem; }
+@media (max-width:480px) {
+    .empty-message h3 { font-size:1.2rem; }
+    .empty-message i { font-size:3rem; }
 }
-</style>'''
+</style>''')
+    print("✅ empty.html ایجاد شد")
 
     # ===== فایل footer.html =====
-    footer_html = '''<div class="footer">
+    with open('templates/footer.html', 'w', encoding='utf-8') as f:
+        f.write('''<div class="footer">
     <div class="social">
         <a href="#" title="تلگرام"><i class="fab fa-telegram"></i></a>
         <a href="#" title="اینستاگرام"><i class="fab fa-instagram"></i></a>
@@ -1013,7 +821,6 @@ def create_templates_folder():
         <i class="fas fa-code"></i> نسخه ۵.۰ | ۱۴۰۴
     </p>
 </div>
-
 <style>
 .footer {
     text-align: center;
@@ -1025,120 +832,100 @@ def create_templates_folder():
     position: relative;
     overflow: hidden;
 }
-
 .footer::before {
     content: '';
     position: absolute;
-    top: -1px;
-    left: 0;
-    right: 0;
+    top: -1px; left: 0; right: 0;
     height: 2px;
     background: var(--gradient-main);
     background-size: 300% 300%;
     animation: gradientMove 4s ease-in-out infinite;
 }
-
 .footer .social {
     display: flex;
     justify-content: center;
     gap: 25px;
     margin-bottom: 20px;
 }
-
 .footer .social a {
     color: var(--text-secondary);
     font-size: 2rem;
-    transition: var(--transition-main);
+    transition: all 0.8s cubic-bezier(0.23,1,0.32,1);
     position: relative;
 }
-
 .footer .social a::after {
     content: '';
     position: absolute;
-    bottom: -5px;
-    left: 0;
-    right: 0;
+    bottom: -5px; left: 0; right: 0;
     height: 2px;
     background: var(--gradient-main);
     background-size: 300% 300%;
     animation: gradientMove 4s ease-in-out infinite;
     transform: scaleX(0);
-    transition: var(--transition-main);
+    transition: all 0.8s cubic-bezier(0.23,1,0.32,1);
 }
-
-.footer .social a:hover::after {
-    transform: scaleX(1);
-}
-
+.footer .social a:hover::after { transform: scaleX(1); }
 .footer .social a:hover {
     color: var(--accent-2);
     transform: translateY(-8px) scale(1.2);
     filter: drop-shadow(0 0 40px rgba(78,205,196,0.2));
 }
-
 .footer a {
     color: var(--accent-2);
     text-decoration: none;
     font-weight: 600;
-    transition: var(--transition-main);
+    transition: all 0.8s cubic-bezier(0.23,1,0.32,1);
 }
-
 .footer a:hover {
     filter: drop-shadow(0 0 40px rgba(78,205,196,0.2));
 }
-
 .footer .heart {
     color: var(--accent-1);
     display: inline-block;
     animation: heartBeat 1.5s infinite;
 }
-
 @keyframes heartBeat {
-    0%, 100% { transform: scale(1); }
+    0%,100% { transform: scale(1); }
     50% { transform: scale(1.5); }
 }
-
-.mt-3 { margin-top: 30px; }
-.op-4 { opacity: 0.4; }
-.fs-small { font-size: 0.7rem; }
-
-@media (max-width: 480px) {
-    .footer { font-size: 0.75rem; padding: 25px 10px 15px; }
-    .footer .social a { font-size: 1.4rem; }
+@media (max-width:480px) {
+    .footer { font-size:0.75rem; padding:25px 10px 15px; }
+    .footer .social a { font-size:1.4rem; }
 }
-</style>'''
+</style>''')
+    print("✅ footer.html ایجاد شد")
 
     # ===== فایل index.html =====
-    index_html = '''{% extends 'base.html' %}
+    with open('templates/index.html', 'w', encoding='utf-8') as f:
+        f.write('''{% extends 'base.html' %}
 
 {% block title %}🎬 سینمای انیمیشن{% endblock %}
 
 {% block content %}
-    
-    {% include 'header.html' %}
-    {% include 'search.html' %}
-    
-    <div class="result-count">
-        <i class="fas fa-list-ul"></i>
-        <strong>{{ result_count }}</strong> انیمیشن پیدا شد
-        {% if search_query %}
-        <span class="op-4">(از {{ total_count }} انیمیشن)</span>
-        {% endif %}
-    </div>
-    
-    <div class="animations-list">
-        {% if animations %}
-            {% set icons = ['fa-film', 'fa-video', 'fa-tv', 'fa-play', 'fa-star', 'fa-music', 'fa-crown', 'fa-rocket'] %}
-            {% for anim in animations %}
-                {% include 'card.html' %}
-            {% endfor %}
-        {% else %}
-            {% include 'empty.html' %}
-        {% endif %}
-    </div>
-    
-    {% include 'footer.html' %}
-    
+
+{% include 'header.html' %}
+{% include 'search.html' %}
+
+<div class="result-count">
+    <i class="fas fa-list-ul"></i>
+    <strong>{{ result_count }}</strong> انیمیشن پیدا شد
+    {% if search_query %}
+    <span class="op-4">(از {{ total_count }} انیمیشن)</span>
+    {% endif %}
+</div>
+
+<div class="animations-list">
+    {% if animations %}
+        {% for anim in animations %}
+            {% include 'card.html' %}
+        {% endfor %}
+    {% else %}
+        {% include 'empty.html' %}
+    {% endif %}
+</div>
+
+{% include 'footer.html' %}
+
 {% endblock %}
 
 <style>
@@ -1148,13 +935,11 @@ def create_templates_folder():
     margin-bottom: 30px;
     font-size: 1.05rem;
 }
-
 .result-count strong {
     color: #fff;
     font-size: 1.3rem;
     font-weight: 900;
 }
-
 .animations-list {
     display: flex;
     flex-direction: column;
@@ -1163,7 +948,6 @@ def create_templates_folder():
     overflow-y: auto;
     padding-right: 5px;
 }
-
 .animations-list::-webkit-scrollbar {
     width: 8px;
 }
@@ -1176,38 +960,16 @@ def create_templates_folder():
     border-radius: 10px;
     box-shadow: 0 0 30px rgba(108,92,231,0.3);
 }
-
-.op-4 { opacity: 0.4; }
-
-@media (max-width: 768px) {
-    .animations-list { max-height: 500px; gap: 12px; }
+@media (max-width:768px) {
+    .animations-list { max-height:500px; gap:12px; }
 }
-
-@media (max-width: 480px) {
-    .animations-list { gap: 10px; max-height: 400px; }
+@media (max-width:480px) {
+    .animations-list { gap:10px; max-height:400px; }
 }
-</style>'''
-
-    # نوشتن فایل‌ها
-    files = {
-        'base.html': base_html,
-        'header.html': header_html,
-        'stats.html': stats_html,
-        'search.html': search_html,
-        'card.html': card_html,
-        'empty.html': empty_html,
-        'footer.html': footer_html,
-        'index.html': index_html
-    }
+</style>''')
+    print("✅ index.html ایجاد شد")
     
-    for filename, content in files.items():
-        filepath = os.path.join('templates', filename)
-        if not os.path.exists(filepath):
-            with open(filepath, 'w', encoding='utf-8') as f:
-                f.write(content)
-            print(f"✅ فایل {filename} ایجاد شد")
-        else:
-            print(f"⏭️ فایل {filename} از قبل وجود دارد")
+    print("\n✅ همه فایل‌های HTML با موفقیت ساخته شدند!")
 
 # ============================================
 # ۲. دیتای انیمیشن‌ها
@@ -1262,16 +1024,19 @@ def index():
 # ============================================
 
 if __name__ == '__main__':
-    print("="*50)
-    print("🎬 سینمای انیمیشن - راه‌اندازی")
-    print("="*50)
+    print("="*60)
+    print("🎬 سینمای انیمیشن - راه‌اندازی خودکار")
+    print("="*60)
     
     # ایجاد فایل‌های HTML به صورت خودکار
-    create_templates_folder()
+    create_templates()
     
-    print("\n" + "="*50)
+    print("\n" + "="*60)
     print("🚀 سرور در حال اجرا...")
     print("📍 آدرس: http://127.0.0.1:5000")
-    print("="*50)
+    print("📁 فایل‌های HTML در پوشه templates ساخته شدند")
+    print("="*60)
+    print("\n💡 برای توقف سرور کلید Ctrl+C را بزنید")
+    print("="*60)
     
     app.run(debug=True, host='0.0.0.0', port=5000)
