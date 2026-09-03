@@ -3,17 +3,13 @@ import os
 
 app = Flask(__name__)
 
-# ============================================
-# ۱. ایجاد خودکار فایل‌های HTML
-# ============================================
-
 def create_templates():
-    """ایجاد پوشه templates و فایل‌های HTML به صورت خودکار"""
+    """ایجاد پوشه templates و فایل‌های HTML"""
     
     if not os.path.exists('templates'):
         os.makedirs('templates')
         print("✅ پوشه templates ایجاد شد")
-    
+
     # ===== فایل base.html =====
     with open('templates/base.html', 'w', encoding='utf-8') as f:
         f.write('''<!DOCTYPE html>
@@ -31,8 +27,7 @@ def create_templates():
             --text-secondary: rgba(255,255,255,0.7);
             --accent-1: #ff6b6b;
             --accent-2: #4ecdc4;
-            --accent-3: #a29bfe;
-            --gradient-main: linear-gradient(135deg, #6c5ce7 0%, #a29bfe 25%, #4ecdc4 50%, #ff6b6b 75%, #fdcb6e 100%);
+            --gradient-main: linear-gradient(135deg, #6c5ce7, #a29bfe, #4ecdc4, #ff6b6b);
             --shadow-main: 0 30px 80px rgba(0,0,0,0.7);
             --radius-main: 24px;
             --glass-main: rgba(255,255,255,0.05);
@@ -45,7 +40,6 @@ def create_templates():
             color: var(--text-primary);
             min-height: 100vh;
             overflow-x: hidden;
-            position: relative;
         }
         .cinema-bg {
             position: fixed;
@@ -53,41 +47,39 @@ def create_templates():
             z-index:0;
             background: radial-gradient(ellipse at 10% 30%, rgba(108,92,231,0.4) 0%, transparent 50%),
                         radial-gradient(ellipse at 90% 70%, rgba(78,205,196,0.3) 0%, transparent 50%),
-                        radial-gradient(ellipse at 50% 50%, rgba(255,107,107,0.1) 0%, transparent 60%),
                         #0a0a1a;
             animation: cinemaPulse 10s ease-in-out infinite alternate;
         }
         @keyframes cinemaPulse {
-            0% { opacity: 0.7; transform: scale(1); }
-            100% { opacity: 1; transform: scale(1.02); }
+            0% { opacity:0.7; }
+            100% { opacity:1; }
         }
         .light-rays {
             position: fixed;
-            top: -50%; left: -50%;
-            width: 200%; height: 200%;
-            z-index: 1;
-            pointer-events: none;
+            top:-50%; left:-50%;
+            width:200%; height:200%;
+            z-index:1;
+            pointer-events:none;
             background: repeating-linear-gradient(45deg, transparent 0px, rgba(255,255,255,0.02) 50px, transparent 100px);
             animation: lightRays 20s linear infinite;
         }
         @keyframes lightRays {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+            0% { transform:rotate(0deg); }
+            100% { transform:rotate(360deg); }
         }
         .particles-3d {
             position: fixed;
             top:0; left:0; right:0; bottom:0;
             z-index:1;
-            pointer-events: none;
-            overflow: hidden;
+            pointer-events:none;
+            overflow:hidden;
         }
         .particle-3d {
-            position: absolute;
-            border-radius: 50%;
-            background: rgba(255,255,255,0.1);
-            backdrop-filter: blur(2px);
-            border: 1px solid rgba(255,255,255,0.05);
-            animation: float3d linear infinite;
+            position:absolute;
+            border-radius:50%;
+            background:rgba(255,255,255,0.1);
+            border:1px solid rgba(255,255,255,0.05);
+            animation:float3d linear infinite;
         }
         .particle-3d:nth-child(1) { width:40px; height:40px; left:10%; animation-duration:25s; }
         .particle-3d:nth-child(2) { width:60px; height:60px; left:25%; animation-duration:30s; animation-delay:2s; }
@@ -96,45 +88,43 @@ def create_templates():
         .particle-3d:nth-child(5) { width:35px; height:35px; left:70%; animation-duration:22s; animation-delay:3s; }
         .particle-3d:nth-child(6) { width:45px; height:45px; left:85%; animation-duration:26s; animation-delay:5s; }
         @keyframes float3d {
-            0% { transform: translateY(100vh) rotate(0deg) scale(0); opacity:0; }
+            0% { transform:translateY(100vh) rotate(0deg) scale(0); opacity:0; }
             10% { opacity:0.5; }
             90% { opacity:0.5; }
-            100% { transform: translateY(-10vh) rotate(720deg) scale(1); opacity:0; }
+            100% { transform:translateY(-10vh) rotate(720deg) scale(1); opacity:0; }
         }
         .container {
-            position: relative;
-            z-index: 2;
-            max-width: 1100px;
-            margin: 0 auto;
-            padding: 20px;
+            position:relative;
+            z-index:2;
+            max-width:1100px;
+            margin:0 auto;
+            padding:20px;
         }
         .theme-toggle {
-            position: fixed;
+            position:fixed;
             top:25px; left:25px;
             z-index:1000;
-            background: var(--glass-main);
-            backdrop-filter: blur(25px);
-            color: var(--text-primary);
-            border: 1px solid var(--glass-border);
-            padding: 18px 24px;
-            border-radius: 50px;
-            cursor: pointer;
-            font-size: 1.5rem;
-            transition: all 0.8s cubic-bezier(0.23,1,0.32,1);
-            box-shadow: var(--shadow-main);
+            background:var(--glass-main);
+            backdrop-filter:blur(25px);
+            color:var(--text-primary);
+            border:1px solid var(--glass-border);
+            padding:18px 24px;
+            border-radius:50px;
+            cursor:pointer;
+            font-size:1.5rem;
+            transition:all 0.8s;
+            box-shadow:var(--shadow-main);
         }
         .theme-toggle:hover {
-            transform: scale(1.2) rotate(90deg);
-            border-color: var(--accent-2);
-            box-shadow: 0 0 80px rgba(78,205,196,0.2);
+            transform:scale(1.2) rotate(90deg);
+            border-color:var(--accent-2);
         }
+        .op-4 { opacity:0.4; }
+        .mt-3 { margin-top:30px; }
+        .fs-small { font-size:0.7rem; }
         @media (max-width:768px) {
             .theme-toggle { top:15px; left:15px; padding:12px 16px; font-size:1.1rem; }
         }
-        .mt-3 { margin-top:30px; }
-        .op-4 { opacity:0.4; }
-        .fs-small { font-size:0.7rem; }
-        .text-center { text-align:center; }
     </style>
     {% block extra_css %}{% endblock %}
 </head>
@@ -149,7 +139,7 @@ def create_templates():
         <div class="particle-3d"></div>
         <div class="particle-3d"></div>
     </div>
-    <button class="theme-toggle" onclick="toggleTheme()" title="تغییر تم">
+    <button class="theme-toggle" onclick="toggleTheme()">
         <i class="fas fa-moon"></i>
     </button>
     <div class="container">
@@ -158,33 +148,23 @@ def create_templates():
     <script>
         function toggleTheme() {
             const html = document.documentElement;
-            const currentTheme = html.getAttribute('data-theme');
-            const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+            const current = html.getAttribute('data-theme');
+            const newTheme = current === 'light' ? 'dark' : 'light';
             html.setAttribute('data-theme', newTheme);
             const btn = document.querySelector('.theme-toggle');
-            if (newTheme === 'light') {
-                btn.innerHTML = '<i class="fas fa-sun"></i>';
-            } else {
-                btn.innerHTML = '<i class="fas fa-moon"></i>';
-            }
+            btn.innerHTML = newTheme === 'light' ? '<i class="fas fa-sun"></i>' : '<i class="fas fa-moon"></i>';
             localStorage.setItem('theme', newTheme);
         }
         document.addEventListener('DOMContentLoaded', function() {
-            const savedTheme = localStorage.getItem('theme') || 'dark';
-            document.documentElement.setAttribute('data-theme', savedTheme);
+            const saved = localStorage.getItem('theme') || 'dark';
+            document.documentElement.setAttribute('data-theme', saved);
             const btn = document.querySelector('.theme-toggle');
-            if (savedTheme === 'light') {
-                btn.innerHTML = '<i class="fas fa-sun"></i>';
-            } else {
-                btn.innerHTML = '<i class="fas fa-moon"></i>';
-            }
+            btn.innerHTML = saved === 'light' ? '<i class="fas fa-sun"></i>' : '<i class="fas fa-moon"></i>';
         });
-        function cardGlow(event, card) {
+        function cardGlow(e, card) {
             const rect = card.getBoundingClientRect();
-            const x = ((event.clientX - rect.left) / rect.width) * 100;
-            const y = ((event.clientY - rect.top) / rect.height) * 100;
-            card.style.setProperty('--mouse-x', x + '%');
-            card.style.setProperty('--mouse-y', y + '%');
+            card.style.setProperty('--mouse-x', ((e.clientX - rect.left) / rect.width * 100) + '%');
+            card.style.setProperty('--mouse-y', ((e.clientY - rect.top) / rect.height * 100) + '%');
         }
         function cardReset(card) {
             card.style.setProperty('--mouse-x', '50%');
@@ -200,118 +180,101 @@ def create_templates():
     with open('templates/header.html', 'w', encoding='utf-8') as f:
         f.write('''<div class="header">
     <div class="header-content">
-        <div class="header-badge">
-            <i class="fas fa-crown"></i> برترین انیمیشن‌ها
-        </div>
-        <h1>
-            <i class="fas fa-film"></i>
-            سینمای انیمیشن
-        </h1>
-        <p class="subtitle">
-            <i class="fas fa-play-circle"></i>
-            بیش از {{ total_count }} انیمیشن دوبله فارسی از آپارات
-        </p>
+        <div class="header-badge"><i class="fas fa-crown"></i> برترین انیمیشن‌ها</div>
+        <h1><i class="fas fa-film"></i> سینمای انیمیشن</h1>
+        <p class="subtitle"><i class="fas fa-play-circle"></i> بیش از {{ total_count }} انیمیشن دوبله فارسی از آپارات</p>
         {% include 'stats.html' %}
     </div>
 </div>
 <style>
 .header {
-    text-align: center;
-    padding: 70px 30px 50px;
-    background: var(--glass-main);
-    backdrop-filter: blur(40px);
-    border-radius: var(--radius-main);
-    margin-bottom: 35px;
-    border: 1px solid var(--glass-border);
-    box-shadow: var(--shadow-main);
-    position: relative;
-    overflow: hidden;
+    text-align:center;
+    padding:70px 30px 50px;
+    background:var(--glass-main);
+    backdrop-filter:blur(40px);
+    border-radius:var(--radius-main);
+    margin-bottom:35px;
+    border:1px solid var(--glass-border);
+    box-shadow:var(--shadow-main);
+    position:relative;
+    overflow:hidden;
 }
 .header::before {
-    content: '';
-    position: absolute;
-    inset: -2px;
-    background: conic-gradient(from 0deg, transparent, rgba(255,107,107,0.4), rgba(78,205,196,0.4), rgba(162,155,254,0.4), transparent);
-    border-radius: var(--radius-main);
-    z-index: -1;
-    animation: rotateBorder 8s linear infinite;
-    filter: blur(30px);
+    content:'';
+    position:absolute;
+    inset:-2px;
+    background:conic-gradient(from 0deg, transparent, rgba(255,107,107,0.4), rgba(78,205,196,0.4), transparent);
+    border-radius:var(--radius-main);
+    z-index:-1;
+    animation:rotateBorder 8s linear infinite;
+    filter:blur(30px);
 }
 @keyframes rotateBorder {
-    0% { transform: rotate(0deg) scale(1); }
-    100% { transform: rotate(360deg) scale(1.2); }
+    0% { transform:rotate(0deg); }
+    100% { transform:rotate(360deg); }
 }
-.header-content { position: relative; z-index: 1; }
+.header-content { position:relative; z-index:1; }
 .header-badge {
-    display: inline-block;
-    background: rgba(255,255,255,0.08);
-    backdrop-filter: blur(10px);
-    padding: 8px 24px;
-    border-radius: 50px;
-    font-size: 0.85rem;
-    color: var(--accent-2);
-    border: 1px solid rgba(78,205,196,0.25);
-    margin-bottom: 20px;
-    letter-spacing: 3px;
-    animation: badgePulse 2s infinite;
+    display:inline-block;
+    background:rgba(255,255,255,0.08);
+    backdrop-filter:blur(10px);
+    padding:8px 24px;
+    border-radius:50px;
+    font-size:0.85rem;
+    color:var(--accent-2);
+    border:1px solid rgba(78,205,196,0.25);
+    margin-bottom:20px;
+    letter-spacing:3px;
+    animation:badgePulse 2s infinite;
 }
 @keyframes badgePulse {
-    0%,100% { box-shadow: 0 0 20px rgba(78,205,196,0); }
-    50% { box-shadow: 0 0 60px rgba(78,205,196,0.15); }
+    0%,100% { box-shadow:0 0 20px rgba(78,205,196,0); }
+    50% { box-shadow:0 0 60px rgba(78,205,196,0.15); }
 }
 .header h1 {
-    font-size: 5rem;
-    font-weight: 900;
-    background: var(--gradient-main);
-    background-size: 300% 300%;
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    animation: gradientMove 5s ease-in-out infinite;
-    letter-spacing: 5px;
-    line-height: 1.2;
+    font-size:5rem;
+    font-weight:900;
+    background:var(--gradient-main);
+    background-size:300% 300%;
+    -webkit-background-clip:text;
+    -webkit-text-fill-color:transparent;
+    animation:gradientMove 5s ease-in-out infinite;
+    letter-spacing:5px;
 }
 @keyframes gradientMove {
-    0% { background-position: 0% 50%; }
-    50% { background-position: 100% 50%; }
-    100% { background-position: 0% 50%; }
+    0% { background-position:0% 50%; }
+    50% { background-position:100% 50%; }
+    100% { background-position:0% 50%; }
 }
 .header h1 i {
-    -webkit-text-fill-color: initial;
-    background: none;
-    color: #fff;
-    margin-left: 25px;
-    filter: drop-shadow(0 0 40px rgba(108,92,231,0.5));
-    animation: iconFloat 4s ease-in-out infinite;
+    -webkit-text-fill-color:initial;
+    color:#fff;
+    margin-left:25px;
+    filter:drop-shadow(0 0 40px rgba(108,92,231,0.5));
+    animation:iconFloat 4s ease-in-out infinite;
 }
 @keyframes iconFloat {
-    0%,100% { transform: translateY(0) rotate(0deg); }
-    25% { transform: translateY(-20px) rotate(-5deg); }
-    75% { transform: translateY(10px) rotate(5deg); }
+    0%,100% { transform:translateY(0); }
+    50% { transform:translateY(-15px); }
 }
 .header .subtitle {
-    font-size: 1.4rem;
-    color: var(--text-secondary);
-    margin-top: 15px;
-    font-weight: 300;
-    letter-spacing: 2px;
+    font-size:1.4rem;
+    color:var(--text-secondary);
+    margin-top:15px;
+    font-weight:300;
 }
 .header .subtitle i {
-    color: var(--accent-2);
-    margin-left: 12px;
-    animation: subtitlePulse 2s infinite;
-}
-@keyframes subtitlePulse {
-    0%,100% { opacity: 1; transform: scale(1); }
-    50% { opacity: 0.4; transform: scale(0.8); }
+    color:var(--accent-2);
+    margin-left:12px;
 }
 @media (max-width:768px) {
-    .header h1 { font-size: 3rem; }
-    .header { padding: 40px 20px 30px; }
-    .header .subtitle { font-size: 1rem; }
+    .header h1 { font-size:3rem; }
+    .header { padding:40px 20px 30px; }
+    .header .subtitle { font-size:1rem; }
 }
 @media (max-width:480px) {
-    .header h1 { font-size: 2rem; }
-    .header { padding: 25px 15px 20px; border-radius: 18px; }
+    .header h1 { font-size:2rem; }
+    .header { padding:25px 15px 20px; }
 }
 </style>''')
     print("✅ header.html ایجاد شد")
@@ -319,70 +282,49 @@ def create_templates():
     # ===== فایل stats.html =====
     with open('templates/stats.html', 'w', encoding='utf-8') as f:
         f.write('''<div class="header-stats">
-    <div class="header-stat">
-        <i class="fas fa-video"></i>
-        <strong>{{ total_count }}</strong> انیمیشن
-    </div>
-    <div class="header-stat">
-        <i class="fas fa-check-circle"></i>
-        <strong>{{ result_count }}</strong> نمایش داده شده
-    </div>
-    <div class="header-stat">
-        <i class="fas fa-eye"></i>
-        <strong>۵۰,۰۰۰+</strong> بازدید کل
-    </div>
+    <div class="header-stat"><i class="fas fa-video"></i> <strong>{{ total_count }}</strong> انیمیشن</div>
+    <div class="header-stat"><i class="fas fa-check-circle"></i> <strong>{{ result_count }}</strong> نمایش داده شده</div>
+    <div class="header-stat"><i class="fas fa-eye"></i> <strong>۵۰,۰۰۰+</strong> بازدید کل</div>
 </div>
 <style>
 .header-stats {
-    display: flex;
-    justify-content: center;
-    gap: 40px;
-    margin-top: 30px;
-    flex-wrap: wrap;
+    display:flex;
+    justify-content:center;
+    gap:40px;
+    margin-top:30px;
+    flex-wrap:wrap;
 }
 .header-stat {
-    background: var(--glass-main);
-    backdrop-filter: blur(15px);
-    padding: 12px 30px;
-    border-radius: 50px;
-    border: 1px solid var(--glass-border);
-    font-size: 0.95rem;
-    color: var(--text-secondary);
-    transition: all 0.8s cubic-bezier(0.23,1,0.32,1);
-    cursor: default;
-    position: relative;
-    overflow: hidden;
-}
-.header-stat::before {
-    content: '';
-    position: absolute;
-    top: -50%; left: -50%;
-    width: 200%; height: 200%;
-    background: conic-gradient(from 0deg, transparent, rgba(78,205,196,0.05), transparent);
-    animation: rotateBorder 6s linear infinite;
+    background:var(--glass-main);
+    backdrop-filter:blur(15px);
+    padding:12px 30px;
+    border-radius:50px;
+    border:1px solid var(--glass-border);
+    font-size:0.95rem;
+    color:var(--text-secondary);
+    transition:all 0.8s;
+    cursor:default;
 }
 .header-stat:hover {
-    transform: translateY(-5px) scale(1.05);
-    border-color: var(--accent-2);
-    box-shadow: 0 20px 60px rgba(78,205,196,0.1);
+    transform:translateY(-5px) scale(1.05);
+    border-color:var(--accent-2);
 }
 .header-stat strong {
-    color: #fff;
-    font-size: 1.2rem;
-    font-weight: 900;
+    color:#fff;
+    font-size:1.2rem;
 }
 .header-stat i {
-    color: var(--accent-2);
-    margin-left: 10px;
+    color:var(--accent-2);
+    margin-left:10px;
 }
 @media (max-width:768px) {
-    .header-stats { gap: 15px; }
-    .header-stat { padding: 8px 18px; font-size: 0.8rem; }
+    .header-stats { gap:15px; }
+    .header-stat { padding:8px 18px; font-size:0.8rem; }
 }
 @media (max-width:480px) {
-    .header-stats { gap: 10px; }
-    .header-stat { padding: 6px 14px; font-size: 0.7rem; }
-    .header-stat strong { font-size: 0.9rem; }
+    .header-stats { gap:10px; }
+    .header-stat { padding:6px 14px; font-size:0.7rem; }
+    .header-stat strong { font-size:0.9rem; }
 }
 </style>''')
     print("✅ stats.html ایجاد شد")
@@ -391,100 +333,82 @@ def create_templates():
     with open('templates/search.html', 'w', encoding='utf-8') as f:
         f.write('''<form class="search-box" method="GET" action="/">
     <input type="text" name="search" placeholder="🔍 جستجوی انیمیشن..." value="{{ search_query }}">
-    <button type="submit">
-        <i class="fas fa-search"></i> جستجو
-    </button>
-    {% if search_query %}
-    <a href="/" class="reset-btn">
-        <i class="fas fa-times"></i> پاک کردن
-    </a>
-    {% endif %}
+    <button type="submit"><i class="fas fa-search"></i> جستجو</button>
+    {% if search_query %}<a href="/" class="reset-btn"><i class="fas fa-times"></i> پاک کردن</a>{% endif %}
 </form>
 <style>
 .search-box {
-    display: flex;
-    gap: 15px;
-    margin-bottom: 35px;
-    justify-content: center;
-    flex-wrap: wrap;
+    display:flex;
+    gap:15px;
+    margin-bottom:35px;
+    justify-content:center;
+    flex-wrap:wrap;
 }
 .search-box input {
-    flex: 1;
-    max-width: 520px;
-    padding: 20px 35px;
-    background: var(--glass-main);
-    backdrop-filter: blur(25px);
-    color: var(--text-primary);
-    border: 1px solid var(--glass-border);
-    border-radius: 60px;
-    font-size: 1.1rem;
-    transition: all 0.8s cubic-bezier(0.23,1,0.32,1);
-    font-family: inherit;
-    box-shadow: var(--shadow-main);
+    flex:1;
+    max-width:520px;
+    padding:20px 35px;
+    background:var(--glass-main);
+    backdrop-filter:blur(25px);
+    color:var(--text-primary);
+    border:1px solid var(--glass-border);
+    border-radius:60px;
+    font-size:1.1rem;
+    transition:all 0.8s;
+    font-family:inherit;
+    box-shadow:var(--shadow-main);
 }
 .search-box input:focus {
-    outline: none;
-    border-color: var(--accent-2);
-    box-shadow: 0 0 80px rgba(78,205,196,0.1);
-    transform: scale(1.03);
+    outline:none;
+    border-color:var(--accent-2);
+    transform:scale(1.03);
 }
 .search-box input::placeholder {
-    color: var(--text-secondary);
-    opacity: 0.4;
+    color:var(--text-secondary);
+    opacity:0.4;
 }
 .search-box button {
-    padding: 20px 50px;
-    background: var(--gradient-main);
-    background-size: 300% 300%;
-    animation: gradientMove 4s ease-in-out infinite;
-    color: white;
-    border: none;
-    border-radius: 60px;
-    font-size: 1.1rem;
-    cursor: pointer;
-    transition: all 0.8s cubic-bezier(0.23,1,0.32,1);
-    font-family: inherit;
-    font-weight: 700;
-    box-shadow: 0 15px 60px rgba(108,92,231,0.3);
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    position: relative;
-    overflow: hidden;
-}
-.search-box button::before {
-    content: '';
-    position: absolute;
-    top: -50%; left: -50%;
-    width: 200%; height: 200%;
-    background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 60%);
-    animation: rotateBorder 8s linear infinite;
+    padding:20px 50px;
+    background:var(--gradient-main);
+    background-size:300% 300%;
+    animation:gradientMove 4s ease-in-out infinite;
+    color:white;
+    border:none;
+    border-radius:60px;
+    font-size:1.1rem;
+    cursor:pointer;
+    transition:all 0.8s;
+    font-family:inherit;
+    font-weight:700;
+    box-shadow:0 15px 60px rgba(108,92,231,0.3);
+    display:flex;
+    align-items:center;
+    gap:12px;
 }
 .search-box button:hover {
-    transform: translateY(-8px) scale(1.05);
-    box-shadow: 0 25px 80px rgba(108,92,231,0.5);
+    transform:translateY(-8px) scale(1.05);
+    box-shadow:0 25px 80px rgba(108,92,231,0.5);
 }
 .reset-btn {
-    padding: 20px 35px;
-    background: rgba(255,107,107,0.12);
-    backdrop-filter: blur(25px);
-    color: var(--accent-1);
-    border: 1px solid rgba(255,107,107,0.15);
-    border-radius: 60px;
-    font-size: 1.1rem;
-    cursor: pointer;
-    transition: all 0.8s cubic-bezier(0.23,1,0.32,1);
-    font-family: inherit;
-    text-decoration: none;
-    display: inline-flex;
-    align-items: center;
-    gap: 10px;
-    box-shadow: var(--shadow-main);
+    padding:20px 35px;
+    background:rgba(255,107,107,0.12);
+    backdrop-filter:blur(25px);
+    color:var(--accent-1);
+    border:1px solid rgba(255,107,107,0.15);
+    border-radius:60px;
+    font-size:1.1rem;
+    cursor:pointer;
+    transition:all 0.8s;
+    font-family:inherit;
+    text-decoration:none;
+    display:inline-flex;
+    align-items:center;
+    gap:10px;
+    box-shadow:var(--shadow-main);
 }
 .reset-btn:hover {
-    transform: translateY(-8px) scale(1.05);
-    background: rgba(255,107,107,0.2);
-    box-shadow: 0 25px 80px rgba(255,107,107,0.1);
+    transform:translateY(-8px) scale(1.05);
+    background:rgba(255,107,107,0.2);
 }
 @media (max-width:768px) {
     .search-box input { max-width:100%; width:100%; padding:14px 22px; font-size:0.95rem; }
@@ -499,264 +423,202 @@ def create_templates():
 </style>''')
     print("✅ search.html ایجاد شد")
 
-    # ===== فایل card.html =====
+    # ===== فایل card.html (بدون loop) =====
     with open('templates/card.html', 'w', encoding='utf-8') as f:
-        f.write('''<div class="card" 
-     onmousemove="cardGlow(event, this)"
-     onmouseleave="cardReset(this)">
-    <div class="card-avatar">
-        <i class="fas {{ icons[loop.index0 % icons|length] }}"></i>
-    </div>
+        f.write('''<div class="card" onmousemove="cardGlow(event, this)" onmouseleave="cardReset(this)">
+    <div class="card-avatar"><i class="fas {{ icons[anim_index % icons|length] }}"></i></div>
     <div class="card-info">
         <div class="card-title">
-            <span class="card-number">#{{ loop.index }}</span>
+            <span class="card-number">#{{ anim_index + 1 }}</span>
             {{ anim.title }}
-            {% if loop.index <= 3 %}
-            <span class="badge-new">جدید</span>
-            {% endif %}
+            {% if anim_index < 3 %}<span class="badge-new">جدید</span>{% endif %}
         </div>
-        <div class="card-description">
-            <i class="fas fa-circle"></i>
-            {{ anim.description }}
-        </div>
+        <div class="card-description"><i class="fas fa-circle"></i> {{ anim.description }}</div>
     </div>
-    <a href="{{ anim.url }}" target="_blank" class="btn-watch">
-        <i class="fas fa-play"></i> تماشا
-    </a>
+    <a href="{{ anim.url }}" target="_blank" class="btn-watch"><i class="fas fa-play"></i> تماشا</a>
 </div>
 <style>
 .card {
-    background: var(--glass-main);
-    backdrop-filter: blur(30px);
-    border-radius: var(--radius-main);
-    padding: 18px 26px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    transition: all 0.8s cubic-bezier(0.23,1,0.32,1);
-    border: 1px solid var(--glass-border);
-    box-shadow: var(--shadow-main);
-    position: relative;
-    overflow: hidden;
-    animation: cardSlide 0.7s ease forwards;
-    opacity: 0;
-    gap: 20px;
-    height: 120px;
-    min-height: 120px;
-    max-height: 120px;
-    transform-style: preserve-3d;
-    perspective: 1500px;
-    cursor: default;
+    background:var(--glass-main);
+    backdrop-filter:blur(30px);
+    border-radius:var(--radius-main);
+    padding:18px 26px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    transition:all 0.8s;
+    border:1px solid var(--glass-border);
+    box-shadow:var(--shadow-main);
+    position:relative;
+    overflow:hidden;
+    animation:cardSlide 0.7s ease forwards;
+    opacity:0;
+    gap:20px;
+    height:120px;
+    min-height:120px;
+    max-height:120px;
+    cursor:default;
 }
 .card::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: radial-gradient(circle at var(--mouse-x, 50%) var(--mouse-y, 50%), 
-                rgba(255,255,255,0.1) 0%, 
-                rgba(255,255,255,0.02) 30%,
-                transparent 60%);
-    transition: 0.3s;
-    pointer-events: none;
-    border-radius: var(--radius-main);
+    content:'';
+    position:absolute;
+    inset:0;
+    background:radial-gradient(circle at var(--mouse-x,50%) var(--mouse-y,50%), rgba(255,255,255,0.1) 0%, transparent 60%);
+    transition:0.3s;
+    pointer-events:none;
+    border-radius:var(--radius-main);
 }
 .card::after {
-    content: '';
-    position: absolute;
-    inset: -1px;
-    border-radius: var(--radius-main);
-    padding: 1px;
-    background: conic-gradient(from var(--angle, 0deg), 
-        #ff6b6b, #4ecdc4, #a29bfe, #fdcb6e, #fd79a8, #ff6b6b);
-    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-    -webkit-mask-composite: xor;
-    mask-composite: exclude;
-    opacity: 0;
-    transition: all 0.8s cubic-bezier(0.23,1,0.32,1);
+    content:'';
+    position:absolute;
+    inset:-1px;
+    border-radius:var(--radius-main);
+    padding:1px;
+    background:conic-gradient(from var(--angle,0deg), #ff6b6b, #4ecdc4, #a29bfe, #fdcb6e, #ff6b6b);
+    -webkit-mask:linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite:xor;
+    mask-composite:exclude;
+    opacity:0;
+    transition:all 0.8s;
 }
 .card:hover::after {
-    opacity: 1;
-    animation: spinBorderRGB 2s linear infinite;
+    opacity:1;
+    animation:spinBorder 2s linear infinite;
 }
-@keyframes spinBorderRGB {
-    from { --angle: 0deg; }
-    to { --angle: 360deg; }
+@keyframes spinBorder {
+    from { --angle:0deg; }
+    to { --angle:360deg; }
 }
 @property --angle {
-    syntax: '<angle>';
-    initial-value: 0deg;
-    inherits: false;
+    syntax:'<angle>';
+    initial-value:0deg;
+    inherits:false;
 }
 .card:hover {
-    transform: translateY(-10px) scale(1.03) rotateX(4deg) rotateY(4deg);
-    border-color: transparent;
-    box-shadow: 0 40px 100px rgba(0,0,0,0.6), 0 0 100px rgba(78,205,196,0.05);
+    transform:translateY(-10px) scale(1.03);
+    border-color:transparent;
 }
 @keyframes cardSlide {
-    from { opacity:0; transform: translateY(60px) scale(0.85) rotateX(-15deg) rotateY(-10deg); }
-    to { opacity:1; transform: translateY(0) scale(1) rotateX(0) rotateY(0); }
+    from { opacity:0; transform:translateY(60px) scale(0.85); }
+    to { opacity:1; transform:translateY(0) scale(1); }
 }
 .card-avatar {
-    width: 55px;
-    height: 55px;
-    min-width: 55px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 1.6rem;
-    color: white;
-    background: var(--gradient-main);
-    background-size: 300% 300%;
-    animation: gradientMove 4s ease-in-out infinite;
-    box-shadow: 0 15px 50px rgba(0,0,0,0.4);
-    transition: all 0.8s cubic-bezier(0.23,1,0.32,1);
-    position: relative;
-    transform-style: preserve-3d;
-}
-.card-avatar::after {
-    content: '';
-    position: absolute;
-    inset: -4px;
-    border-radius: 50%;
-    background: var(--gradient-main);
-    background-size: 300% 300%;
-    animation: gradientMove 4s ease-in-out infinite;
-    opacity: 0;
-    filter: blur(20px);
-    transition: all 0.8s cubic-bezier(0.23,1,0.32,1);
-    z-index: -1;
+    width:55px;
+    height:55px;
+    min-width:55px;
+    border-radius:50%;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:1.6rem;
+    color:white;
+    background:var(--gradient-main);
+    background-size:300% 300%;
+    animation:gradientMove 4s ease-in-out infinite;
+    box-shadow:0 15px 50px rgba(0,0,0,0.4);
+    transition:all 0.8s;
 }
 .card:hover .card-avatar {
-    transform: scale(1.25) rotate(-25deg) translateZ(30px);
-    box-shadow: 0 0 80px rgba(108,92,231,0.3);
+    transform:scale(1.2) rotate(-15deg);
 }
-.card:hover .card-avatar::after { opacity: 0.7; }
 .card-info {
-    display: flex;
-    flex-direction: column;
-    gap: 5px;
-    flex: 1;
-    min-width: 0;
-    overflow: hidden;
+    display:flex;
+    flex-direction:column;
+    gap:5px;
+    flex:1;
+    min-width:0;
+    overflow:hidden;
 }
 .card-title {
-    font-size: 1.05rem;
-    font-weight: 700;
-    color: var(--text-primary);
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    flex-wrap: wrap;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+    font-size:1.05rem;
+    font-weight:700;
+    color:var(--text-primary);
+    display:flex;
+    align-items:center;
+    gap:12px;
+    flex-wrap:wrap;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
 }
 .card-number {
-    font-size: 0.7rem;
-    color: var(--text-secondary);
-    background: var(--glass-main);
-    backdrop-filter: blur(10px);
-    padding: 2px 16px;
-    border-radius: 20px;
-    font-weight: 700;
-    min-width: 38px;
-    text-align: center;
-    border: 1px solid var(--glass-border);
-    flex-shrink: 0;
+    font-size:0.7rem;
+    color:var(--text-secondary);
+    background:var(--glass-main);
+    padding:2px 16px;
+    border-radius:20px;
+    font-weight:700;
+    min-width:38px;
+    text-align:center;
+    border:1px solid var(--glass-border);
+    flex-shrink:0;
 }
 .card-description {
-    font-size: 0.85rem;
-    color: var(--text-secondary);
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+    font-size:0.85rem;
+    color:var(--text-secondary);
+    display:flex;
+    align-items:center;
+    gap:8px;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
 }
 .card-description i {
-    color: var(--accent-2);
-    font-size: 0.4rem;
-    flex-shrink: 0;
+    color:var(--accent-2);
+    font-size:0.4rem;
+    flex-shrink:0;
 }
 .btn-watch {
-    background: var(--gradient-main);
-    background-size: 300% 300%;
-    animation: gradientMove 4s ease-in-out infinite;
-    color: white;
-    border: none;
-    padding: 12px 32px;
-    border-radius: 60px;
-    font-size: 0.9rem;
-    cursor: pointer;
-    text-decoration: none;
-    transition: all 0.8s cubic-bezier(0.23,1,0.32,1);
-    font-family: inherit;
-    font-weight: 700;
-    white-space: nowrap;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    box-shadow: 0 15px 50px rgba(108,92,231,0.3);
-    position: relative;
-    overflow: hidden;
-    flex-shrink: 0;
-    height: 44px;
+    background:var(--gradient-main);
+    background-size:300% 300%;
+    animation:gradientMove 4s ease-in-out infinite;
+    color:white;
+    border:none;
+    padding:12px 32px;
+    border-radius:60px;
+    font-size:0.9rem;
+    cursor:pointer;
+    text-decoration:none;
+    transition:all 0.8s;
+    font-family:inherit;
+    font-weight:700;
+    white-space:nowrap;
+    display:flex;
+    align-items:center;
+    gap:10px;
+    box-shadow:0 15px 50px rgba(108,92,231,0.3);
+    flex-shrink:0;
+    height:44px;
 }
-.btn-watch::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.15), transparent);
-    transform: translateX(-100%);
-    transition: 0.8s;
-}
-.btn-watch:hover::before { transform: translateX(100%); }
-.btn-watch::after {
-    content: '';
-    position: absolute;
-    inset: -2px;
-    border-radius: 60px;
-    background: var(--gradient-main);
-    background-size: 300% 300%;
-    animation: gradientMove 4s ease-in-out infinite;
-    filter: blur(20px);
-    z-index: -1;
-    opacity: 0;
-    transition: all 0.8s cubic-bezier(0.23,1,0.32,1);
-}
-.btn-watch:hover::after { opacity: 0.5; }
 .btn-watch:hover {
-    transform: scale(1.15) translateY(-5px);
-    box-shadow: 0 25px 70px rgba(108,92,231,0.5);
+    transform:scale(1.15) translateY(-5px);
+    box-shadow:0 25px 70px rgba(108,92,231,0.5);
 }
 .badge-new {
-    background: var(--gradient-main);
-    background-size: 300% 300%;
-    animation: gradientMove 3s ease-in-out infinite;
-    color: white;
-    font-size: 0.6rem;
-    padding: 2px 14px;
-    border-radius: 20px;
-    font-weight: 700;
-    box-shadow: 0 0 50px rgba(108,92,231,0.3);
-    flex-shrink: 0;
+    background:var(--gradient-main);
+    background-size:300% 300%;
+    animation:gradientMove 3s ease-in-out infinite;
+    color:white;
+    font-size:0.6rem;
+    padding:2px 14px;
+    border-radius:20px;
+    font-weight:700;
+    flex-shrink:0;
 }
 @media (max-width:768px) {
-    .card { padding:12px 16px; gap:12px; height:100px; min-height:100px; max-height:100px; border-radius:18px; }
+    .card { padding:12px 16px; gap:12px; height:100px; min-height:100px; max-height:100px; }
     .card-avatar { width:42px; height:42px; min-width:42px; font-size:1.2rem; }
     .card-title { font-size:0.85rem; white-space:normal; }
     .card-description { font-size:0.7rem; white-space:normal; }
-    .btn-watch { padding:8px 20px; font-size:0.75rem; height:36px; gap:6px; }
+    .btn-watch { padding:8px 20px; font-size:0.75rem; height:36px; }
 }
 @media (max-width:480px) {
-    .card { padding:10px 14px; gap:10px; height:85px; min-height:85px; max-height:85px; border-radius:14px; }
+    .card { padding:10px 14px; gap:10px; height:85px; min-height:85px; max-height:85px; }
     .card-avatar { width:34px; height:34px; min-width:34px; font-size:1rem; }
     .card-title { font-size:0.75rem; gap:6px; }
     .card-number { font-size:0.55rem; padding:1px 10px; min-width:28px; }
     .card-description { font-size:0.6rem; }
-    .btn-watch { font-size:0.65rem; padding:6px 14px; height:30px; gap:5px; }
+    .btn-watch { font-size:0.65rem; padding:6px 14px; height:30px; }
     .badge-new { font-size:0.5rem; padding:1px 8px; }
 }
 </style>''')
@@ -771,31 +633,25 @@ def create_templates():
 </div>
 <style>
 .empty-message {
-    text-align: center;
-    padding: 80px 20px;
-    color: var(--text-secondary);
+    text-align:center;
+    padding:80px 20px;
+    color:var(--text-secondary);
 }
 .empty-message i {
-    font-size: 5rem;
-    color: var(--accent-2);
-    margin-bottom: 25px;
-    display: block;
-    filter: drop-shadow(0 0 80px rgba(78,205,196,0.2));
-    animation: iconFloat 3s ease-in-out infinite;
+    font-size:5rem;
+    color:var(--accent-2);
+    margin-bottom:25px;
+    display:block;
 }
 .empty-message h3 {
-    font-size: 2rem;
-    margin-bottom: 12px;
-    color: var(--text-primary);
+    font-size:2rem;
+    margin-bottom:12px;
+    color:var(--text-primary);
 }
 .empty-message a {
-    color: var(--accent-2);
-    text-decoration: none;
-    font-weight: 600;
-    transition: all 0.8s cubic-bezier(0.23,1,0.32,1);
-}
-.empty-message a:hover {
-    filter: drop-shadow(0 0 40px rgba(78,205,196,0.3));
+    color:var(--accent-2);
+    text-decoration:none;
+    font-weight:600;
 }
 @media (max-width:480px) {
     .empty-message h3 { font-size:1.2rem; }
@@ -808,85 +664,61 @@ def create_templates():
     with open('templates/footer.html', 'w', encoding='utf-8') as f:
         f.write('''<div class="footer">
     <div class="social">
-        <a href="#" title="تلگرام"><i class="fab fa-telegram"></i></a>
-        <a href="#" title="اینستاگرام"><i class="fab fa-instagram"></i></a>
-        <a href="#" title="یوتیوب"><i class="fab fa-youtube"></i></a>
-        <a href="#" title="گیت‌هاب"><i class="fab fa-github"></i></a>
+        <a href="#"><i class="fab fa-telegram"></i></a>
+        <a href="#"><i class="fab fa-instagram"></i></a>
+        <a href="#"><i class="fab fa-youtube"></i></a>
+        <a href="#"><i class="fab fa-github"></i></a>
     </div>
-    <p>
-        تمام ویدیوها از <a href="https://www.aparat.com" target="_blank">آپارات</a> |
-        ساخته شده با <span class="heart">❤️</span> با Flask
-    </p>
-    <p class="mt-3 op-4 fs-small">
-        <i class="fas fa-code"></i> نسخه ۵.۰ | ۱۴۰۴
-    </p>
+    <p>تمام ویدیوها از <a href="https://www.aparat.com" target="_blank">آپارات</a> | ساخته شده با <span class="heart">❤️</span> با Flask</p>
+    <p class="mt-3 op-4 fs-small"><i class="fas fa-code"></i> نسخه ۵.۰ | ۱۴۰۴</p>
 </div>
 <style>
 .footer {
-    text-align: center;
-    margin-top: 50px;
-    padding: 40px 20px 30px;
-    border-top: 1px solid var(--glass-border);
-    color: var(--text-secondary);
-    font-size: 0.95rem;
-    position: relative;
-    overflow: hidden;
+    text-align:center;
+    margin-top:50px;
+    padding:40px 20px 30px;
+    border-top:1px solid var(--glass-border);
+    color:var(--text-secondary);
+    font-size:0.95rem;
+    position:relative;
 }
 .footer::before {
-    content: '';
-    position: absolute;
-    top: -1px; left: 0; right: 0;
-    height: 2px;
-    background: var(--gradient-main);
-    background-size: 300% 300%;
-    animation: gradientMove 4s ease-in-out infinite;
+    content:'';
+    position:absolute;
+    top:-1px; left:0; right:0;
+    height:2px;
+    background:var(--gradient-main);
+    background-size:300% 300%;
+    animation:gradientMove 4s ease-in-out infinite;
 }
 .footer .social {
-    display: flex;
-    justify-content: center;
-    gap: 25px;
-    margin-bottom: 20px;
+    display:flex;
+    justify-content:center;
+    gap:25px;
+    margin-bottom:20px;
 }
 .footer .social a {
-    color: var(--text-secondary);
-    font-size: 2rem;
-    transition: all 0.8s cubic-bezier(0.23,1,0.32,1);
-    position: relative;
+    color:var(--text-secondary);
+    font-size:2rem;
+    transition:all 0.8s;
 }
-.footer .social a::after {
-    content: '';
-    position: absolute;
-    bottom: -5px; left: 0; right: 0;
-    height: 2px;
-    background: var(--gradient-main);
-    background-size: 300% 300%;
-    animation: gradientMove 4s ease-in-out infinite;
-    transform: scaleX(0);
-    transition: all 0.8s cubic-bezier(0.23,1,0.32,1);
-}
-.footer .social a:hover::after { transform: scaleX(1); }
 .footer .social a:hover {
-    color: var(--accent-2);
-    transform: translateY(-8px) scale(1.2);
-    filter: drop-shadow(0 0 40px rgba(78,205,196,0.2));
+    color:var(--accent-2);
+    transform:translateY(-8px) scale(1.2);
 }
 .footer a {
-    color: var(--accent-2);
-    text-decoration: none;
-    font-weight: 600;
-    transition: all 0.8s cubic-bezier(0.23,1,0.32,1);
-}
-.footer a:hover {
-    filter: drop-shadow(0 0 40px rgba(78,205,196,0.2));
+    color:var(--accent-2);
+    text-decoration:none;
+    font-weight:600;
 }
 .footer .heart {
-    color: var(--accent-1);
-    display: inline-block;
-    animation: heartBeat 1.5s infinite;
+    color:var(--accent-1);
+    display:inline-block;
+    animation:heartBeat 1.5s infinite;
 }
 @keyframes heartBeat {
-    0%,100% { transform: scale(1); }
-    50% { transform: scale(1.5); }
+    0%,100% { transform:scale(1); }
+    50% { transform:scale(1.5); }
 }
 @media (max-width:480px) {
     .footer { font-size:0.75rem; padding:25px 10px 15px; }
@@ -895,7 +727,7 @@ def create_templates():
 </style>''')
     print("✅ footer.html ایجاد شد")
 
-    # ===== فایل index.html =====
+    # ===== فایل index.html (نسخه درست) =====
     with open('templates/index.html', 'w', encoding='utf-8') as f:
         f.write('''{% extends 'base.html' %}
 
@@ -917,6 +749,7 @@ def create_templates():
 <div class="animations-list">
     {% if animations %}
         {% for anim in animations %}
+            {% set anim_index = loop.index0 %}
             {% include 'card.html' %}
         {% endfor %}
     {% else %}
@@ -930,35 +763,34 @@ def create_templates():
 
 <style>
 .result-count {
-    text-align: center;
-    color: var(--text-secondary);
-    margin-bottom: 30px;
-    font-size: 1.05rem;
+    text-align:center;
+    color:var(--text-secondary);
+    margin-bottom:30px;
+    font-size:1.05rem;
 }
 .result-count strong {
-    color: #fff;
-    font-size: 1.3rem;
-    font-weight: 900;
+    color:#fff;
+    font-size:1.3rem;
+    font-weight:900;
 }
 .animations-list {
-    display: flex;
-    flex-direction: column;
-    gap: 18px;
-    max-height: 700px;
-    overflow-y: auto;
-    padding-right: 5px;
+    display:flex;
+    flex-direction:column;
+    gap:18px;
+    max-height:700px;
+    overflow-y:auto;
+    padding-right:5px;
 }
 .animations-list::-webkit-scrollbar {
-    width: 8px;
+    width:8px;
 }
 .animations-list::-webkit-scrollbar-track {
-    background: var(--glass-main);
-    border-radius: 10px;
+    background:var(--glass-main);
+    border-radius:10px;
 }
 .animations-list::-webkit-scrollbar-thumb {
-    background: var(--gradient-main);
-    border-radius: 10px;
-    box-shadow: 0 0 30px rgba(108,92,231,0.3);
+    background:var(--gradient-main);
+    border-radius:10px;
 }
 @media (max-width:768px) {
     .animations-list { max-height:500px; gap:12px; }
@@ -968,11 +800,11 @@ def create_templates():
 }
 </style>''')
     print("✅ index.html ایجاد شد")
-    
+
     print("\n✅ همه فایل‌های HTML با موفقیت ساخته شدند!")
 
 # ============================================
-# ۲. دیتای انیمیشن‌ها
+# دیتای انیمیشن‌ها
 # ============================================
 
 animations = [
@@ -995,20 +827,15 @@ animations = [
 ]
 
 # ============================================
-# ۳. اجرای برنامه
+# اجرای برنامه
 # ============================================
 
 @app.route('/')
 def index():
-    """صفحه اصلی"""
     search_query = request.args.get('search', '').strip()
     
     if search_query:
-        filtered = [
-            anim for anim in animations 
-            if search_query.lower() in anim['title'].lower() 
-            or search_query.lower() in anim.get('description', '').lower()
-        ]
+        filtered = [a for a in animations if search_query.lower() in a['title'].lower() or search_query.lower() in a.get('description', '').lower()]
     else:
         filtered = animations
     
@@ -1020,7 +847,7 @@ def index():
                          icons=['fa-film', 'fa-video', 'fa-tv', 'fa-play', 'fa-star', 'fa-music', 'fa-crown', 'fa-rocket'])
 
 # ============================================
-# ۴. اجرای اصلی
+# اجرای اصلی
 # ============================================
 
 if __name__ == '__main__':
@@ -1028,15 +855,11 @@ if __name__ == '__main__':
     print("🎬 سینمای انیمیشن - راه‌اندازی خودکار")
     print("="*60)
     
-    # ایجاد فایل‌های HTML به صورت خودکار
     create_templates()
     
     print("\n" + "="*60)
     print("🚀 سرور در حال اجرا...")
     print("📍 آدرس: http://127.0.0.1:5000")
-    print("📁 فایل‌های HTML در پوشه templates ساخته شدند")
-    print("="*60)
-    print("\n💡 برای توقف سرور کلید Ctrl+C را بزنید")
     print("="*60)
     
     app.run(debug=True, host='0.0.0.0', port=5000)
